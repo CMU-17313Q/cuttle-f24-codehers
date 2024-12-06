@@ -7,7 +7,9 @@ class GameSummary {
   constructor(obj) {
     this.id = obj.id ? obj.id : null;
     this.name = obj.name ? obj.name : null;
-    this.numPlayers = Object.prototype.hasOwnProperty.call(obj, 'players') ? obj.players.length : 0;
+    //this.numPlayers = Object.prototype.hasOwnProperty.call(obj, 'players') ? obj.players.length : 0;
+    this.players = Object.prototype.hasOwnProperty.call(obj, 'players') ? obj.players : [];
+    this.numPlayers = this.players.length;
     this.status = Object.prototype.hasOwnProperty.call(obj, 'status') ? obj.status : GameStatus.ARCHIVED;
     this.isRanked = Object.prototype.hasOwnProperty.call(obj, 'isRanked') ? obj.isRanked : false;
     this.isOver = false;
@@ -52,14 +54,17 @@ export const useGameListStore = defineStore('gameList', {
     joinGame(data) {
       const updatedGame = this.openGames.find((game) => game.id === data.gameId);
       if (updatedGame) {
-        updatedGame.numPlayers = Math.min(2, updatedGame.numPlayers + 1);
+        //updatedGame.numPlayers = Math.min(2, updatedGame.numPlayers + 1);
+        updatedGame.players.push(data.playerId);
+        updatedGame.numPlayers = updatedGame.players.length;
         updatedGame.status = data.newStatus;
       }
     },
     otherLeftGame(gameId) {
       const updatedGame = this.openGames.find((game) => game.id === gameId);
       if (updatedGame) {
-        updatedGame.numPlayers = Math.max(0, updatedGame.numPlayers - 1);
+        //updatedGame.numPlayers = Math.max(0, updatedGame.numPlayers - 1);
+        updatedGame.numPlayers = updatedGame.players.length;
       }
     },
     setIsRanked({ gameId, isRanked }) {
