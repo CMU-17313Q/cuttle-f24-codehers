@@ -36,7 +36,7 @@ module.exports = function gameHook() {
           status: gameService.GameStatus.CREATED,
           createdAt: { '>=': recentUpdateThreshhold },
         })
-          .populate('players')
+          .populate('players', {select: ['id', 'username']})
           .exec(function (error, games) {
             if (error) {
               return reject(error);
