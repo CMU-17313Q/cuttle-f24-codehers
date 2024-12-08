@@ -24,7 +24,7 @@ module.exports = {
       }));
       return game;
     });
-      return exits.success(games);
+      return exits.success(transformedGames);
     } catch (err) {
       return exits.error(err);
     }
