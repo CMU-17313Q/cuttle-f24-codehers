@@ -15,9 +15,19 @@ module.exports = {
         status: gameService.GameStatus.STARTED,
         updatedAt: { '>=': recentUpdateThreshhold },
       }).populate('players');
+
+      // Map players to include only id and username
+      const transformedGames = games.map(game => {
+        game.players = game.players.map(player => ({
+        id: player.id,
+        username: player.username,
+      }));
+      return game;
+    });
       return exits.success(games);
     } catch (err) {
       return exits.error(err);
     }
   },
 };
+
