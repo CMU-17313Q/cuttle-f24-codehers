@@ -9,4 +9,4 @@ export default function validateDrawConditions(game, playerId, playerTurn) {
     throw new Error('game.snackbar.draw.deckIsEmpty');
   }
   return game;
-};
+}

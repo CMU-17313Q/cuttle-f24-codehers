@@ -4,7 +4,7 @@ module.exports = function publishGameState(game) {
     return;
   }
 
-  Game.publish([game.id], {
+  Game.publish( [ game.id ] , {
     change: 'draw',
     game,
   });

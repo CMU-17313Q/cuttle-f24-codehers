@@ -21,7 +21,7 @@ describe('Game Logic Helpers', () => {
       turn: 0,
       topCard: { id: 'card1' },
       secondCard: { id: 'card2' },
-      deck: [{ id: 'card3' }, { id: 'card4' }],
+      deck: [ { id: 'card3' }, { id: 'card4' } ] ,
       log: [],
       oneOff: false,
     };
@@ -79,7 +79,7 @@ describe('Game Logic Helpers', () => {
       publishGameState(mockGame);
 
       expect(Game.publish).toHaveBeenCalledWith(
-        ['game1'],
+        [ 'game1' ] ,
         {
           change: 'draw',
           game: mockGame,
