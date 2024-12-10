@@ -69,7 +69,7 @@ describe('Home - Page Content', () => {
     cy.requestGameList();
     cy.requestGameList();
   });
-  
+
 // Test cases for displaying id and username instaed of player count in the homepage
 
 it('should display both player usernames when two players are in a game', () => {
@@ -120,6 +120,28 @@ it('should display "vs player" when one player is in a game', () => {
 
   // Check the display for the game
   cy.get('[data-cy=game-item]').eq(0).should('contain', 'vs player3');
+});
+
+it('should display "Empty" when there are no players in a game', () => {
+  // Mock the backend response for a game with no players
+  cy.intercept('GET', '/api/games/spectatable', {
+    statusCode: 200,
+    body: [
+      {
+        id: 3,
+        players: [],
+      },
+    ],
+  }).as('getSpectatableGames');
+
+  // Visit the Home Page
+  cy.visit('/');
+
+  // Wait for the API call to complete
+  cy.wait('@getSpectatableGames');
+
+  // Check the display for the game
+  cy.get('[data-cy=game-item]').eq(0).should('contain', 'Empty');
 });
 
 });
