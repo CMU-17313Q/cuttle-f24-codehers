@@ -5,13 +5,14 @@ module.exports = function (req, res) {
 
   if (req.body.gameName) {
     gameAPI
-      .createGame(gameName, isRanked, gameService.GameStatus.CREATED, player0Id, player1Id)
+      .createGame(gameName, isRanked, gameService.GameStatus.CREATED, player0Id, player1Id, isVsAI)
       .then(function (game) {
         sails.sockets.broadcast('GameList', 'gameCreated', {
           id: game.id,
           name: game.name,
           status: game.status,
           isRanked: game.isRanked,
+          isVsAI: game.isVsAI,
           players: [], // This will now be populated based on p0 and p1
         });
         return res.ok({ gameId: game.id });
