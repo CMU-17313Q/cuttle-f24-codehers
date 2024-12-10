@@ -143,6 +143,10 @@ module.exports = {
       type: 'ref',
       columnType: 'timestamptz',
     },
+    isVsAI: {
+      type: 'boolean',
+      defaultsTo: false,
+    },
   },
   customToJSON: function () {
     return {
