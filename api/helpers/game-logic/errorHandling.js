@@ -1,3 +1,4 @@
 module.exports = function handleError(err, res) {
-  return res.badRequest({ message: err.message });
+  const message = err?.message || 'Unknown error occurred';
+  return res.badRequest({ message });
 };
