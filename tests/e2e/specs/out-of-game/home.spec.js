@@ -71,7 +71,6 @@ describe('Home - Page Content', () => {
   });
 
 // Test cases for displaying id and username instaed of player count in the homepage
-
 it('should display both player usernames when two players are in a game', () => {
   // Mock the backend response for a game with two players
   cy.intercept('GET', '/api/games/spectatable', {
