@@ -4,17 +4,17 @@ import updateGameStateAfterDraw from '../../../api/helpers/game-logic/updateGame
 import publishGameState from '../../../api/helpers/game-logic/publishGameState.js';
 import handleError from '../../../api/helpers/game-logic/errorHandling.js';
 
-
-// creating specific mock data of the Game model for publishGameState
-vi.mock('../../../api/models/Game', () => ({
+// Mock the global Game model
+global.Game = {
   publish: vi.fn(),
-}));
-
+};
 
 describe('Game Logic Helpers', () => {
   let mockGame, mockUser;
 
   beforeEach(() => {
+    vi.clearAllMocks();
+
     // Set up mock game and user state
     mockGame = {
       id: 'game1',
@@ -55,21 +55,22 @@ describe('Game Logic Helpers', () => {
         .toThrowError("Can't play while waiting for opponent to counter");
     });
   });
+
   describe('updateGameStateAfterDraw', () => {
     it('should update game state after a draw', () => {
       const { gameUpdates, userUpdates } = updateGameStateAfterDraw(mockGame, mockUser);
 
-      expect(gameUpdates.topCard).toBe('card2'); 
+      expect(gameUpdates.topCard).toBe('card2');
       expect(gameUpdates.log).toContain('Player1 drew a card');
-      expect(gameUpdates.turn).toEqual(1); 
-      expect(userUpdates.frozenId).toBeNull(); 
+      expect(gameUpdates.turn).toEqual(1);
+      expect(userUpdates.frozenId).toBeNull();
     });
 
     it('should handle an empty deck correctly', () => {
-      mockGame.deck = []; 
+      mockGame.deck = [];
       const { gameUpdates } = updateGameStateAfterDraw(mockGame, mockUser);
 
-      expect(gameUpdates.secondCard).toBeNull(); 
+      expect(gameUpdates.secondCard).toBeNull();
     });
   });
 
@@ -78,19 +79,20 @@ describe('Game Logic Helpers', () => {
       publishGameState(mockGame);
 
       expect(Game.publish).toHaveBeenCalledWith(
-        ['game1'], 
+        ['game1'],
         {
-          change: 'draw', 
-          game: mockGame, 
+          change: 'draw',
+          game: mockGame,
         }
       );
     });
 
     it('should handle missing game gracefully', () => {
-      expect(() => publishGameState(null)).not.toThrow(); 
-      expect(Game.publish).not.toHaveBeenCalled(); 
+      expect(() => publishGameState(null)).not.toThrow();
+      expect(Game.publish).not.toHaveBeenCalled();
     });
   });
+
   describe('handleError', () => {
     it('should call res.badRequest with the error message', () => {
       const mockError = new Error('Something went wrong');
@@ -113,7 +115,7 @@ describe('Game Logic Helpers', () => {
       handleError(undefined, mockRes);
 
       expect(mockRes.badRequest).toHaveBeenCalledWith({
-        message: undefined,
+        message: 'Unknown error occurred',
       });
     });
   });
