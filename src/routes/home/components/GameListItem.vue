@@ -8,6 +8,9 @@
         <p v-if="!isSpectatable" class="text-surface-1">
           {{ playersText }}
         </p>
+        <p v-if="isVsAI" class="text-surface-1">
+          (vs AI)
+        </p>
       </v-col>
       <v-col lg="6" class="list-item__button pr-md-0">
         <!-- Join Button -->
@@ -82,6 +85,10 @@ export default {
       default: false,
     },
     disableSpectate: {
+      type: Boolean,
+      default: false,
+    },
+    isVsAI: {
       type: Boolean,
       default: false,
     },
