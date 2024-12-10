@@ -1,6 +1,6 @@
 import { beforeEach, describe, it, expect, vi, afterEach } from 'vitest';
-import { findSpectatableGames } from '../../../api/helpers/find-spectatable-games';
-import { Game } from '../../../models/Game';
+import findSpectatableGames from '../../../../api/helpers/find-spectatable-games.js';
+//import Game from '../../../models/Game'; // Adjust the path as necessary
 
 describe('findSpectatableGames', () => {
   beforeEach(() => {
@@ -21,16 +21,19 @@ describe('findSpectatableGames', () => {
           { id: 1, username: 'player1' },
           { id: 2, username: 'player2' },
         ],
+        numPlayers: 2,
       },
       {
         id: 2,
         players: [
           { id: 3, username: 'player3' },
         ],
+        numPlayers: 1,
       },
       {
         id: 3,
         players: [],
+        numPlayers: 0,
       },
     ];
 
@@ -59,4 +62,3 @@ describe('findSpectatableGames', () => {
     });
   });
 });
-
