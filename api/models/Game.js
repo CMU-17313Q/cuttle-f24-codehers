@@ -144,4 +144,11 @@ module.exports = {
       columnType: 'timestamptz',
     },
   },
+
+  customToJSON: function () {
+    return {
+      ...this,
+      players: [this.p0, this.p1].filter(Boolean),
+    };
+  },
 }; // end exports
