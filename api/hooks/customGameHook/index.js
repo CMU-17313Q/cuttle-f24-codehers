@@ -6,7 +6,7 @@ module.exports = function gameHook() {
   // Game API //
   //////////////
   return {
-    createGame: function (gameName, isRanked = false, status = gameService.GameStatus.CREATED, player0Id, player1Id) {
+    createGame: function (gameName, isRanked = false, status = gameService.GameStatus.CREATED, player0Id, player1Id, isVsAI = false) {
       return new Promise(function (resolve, reject) {
         Game.create({
           name: gameName,
@@ -14,6 +14,7 @@ module.exports = function gameHook() {
           status,
           p0: player0Id,
           p1: player1Id,
+          isVsAI: isVsAI,
         })
           .fetch()
           .then((game) => {
@@ -78,6 +79,10 @@ module.exports = function gameHook() {
                 res = { message: 'home.snackbar.cantFindGame' };
               }
               return reject(res);
+            }
+            // Ensure the isVsAI field is present
+            if (typeof game.isVsAI === 'undefined') {
+              game.isVsAI = false;
             }
             resolve(game);
           });
