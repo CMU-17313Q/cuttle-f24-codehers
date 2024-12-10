@@ -1,6 +1,6 @@
 import { beforeEach, describe, it, expect, vi, afterEach } from 'vitest';
-import findSpectatableGames from '../../../api/helpers/find-spectatable-games';
-import Game from '../../../models/Game'; // Adjust the path as necessary
+import { findSpectatableGames } from '../../../api/helpers/find-spectatable-games';
+import { Game } from '../../../models/Game'; 
 
 describe('findSpectatableGames', () => {
   beforeEach(() => {
