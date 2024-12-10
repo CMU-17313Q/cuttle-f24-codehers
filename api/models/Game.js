@@ -143,5 +143,15 @@ module.exports = {
       type: 'ref',
       columnType: 'timestamptz',
     },
+    isVsAI: {
+      type: 'boolean',
+      defaultsTo: false,
+    },
+  },
+  customToJSON: function () {
+    return {
+      ...this,
+      players: [ this.p0, this.p1 ].filter(Boolean),
+    };
   },
 }; // end exports

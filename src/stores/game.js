@@ -742,5 +742,21 @@ export const useGameStore = defineStore('game', {
       });
     },
 
+    async createGame(gameDetails) {
+      const response = await fetch('/api/games', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...gameDetails,
+          isVsAI: gameDetails.isVsAI || false,
+        }),
+      });
+      const game = await response.json();
+      this.games.push(game);
+      return game;
+    },
+
   }, // End actions
 }); // End game store
