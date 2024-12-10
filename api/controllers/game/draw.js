@@ -1,4 +1,4 @@
-const validateDrawConditions = require('../../helpers/game-logic/validateDrawConditions');
+const validateDrawConditions = require('../../helpers/game-logic/validateDrawConditions').default;
 const updateGameStateAfterDraw = require('../../helpers/game-logic/updateGameStateAfterDraw');
 const publishGameState = require('../../helpers/game-logic/publishGameState');
 const handleError = require('../../helpers/ggame-logic/handleError');

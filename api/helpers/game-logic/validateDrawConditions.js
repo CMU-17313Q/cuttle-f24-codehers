@@ -1,4 +1,4 @@
-module.exports = function validateDrawConditions(game, playerId, playerTurn) {
+export default function validateDrawConditions(game, playerId, playerTurn) {
   if (game.oneOff) {
     throw new Error("Can't play while waiting for opponent to counter");
   }

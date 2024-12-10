@@ -1,8 +1,8 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import validateDrawConditions from '../../../api/helpers/game-logic/validateDrawConditions';
-import updateGameStateAfterDraw from '../../../api/helpers/game-logic/updateGameStateAfterDraw';
-import publishGameState from '../../../api/helpers/game-logic/publishGameState';
-import handleError from '../../../api/helpers/game-logic/errorHandling';
+import  validateDrawConditions from '../../../api/helpers/game-logic/validateDrawConditions';
+import { updateGameStateAfterDraw } from '../../../api/helpers/game-logic/updateGameStateAfterDraw';
+import { publishGameState } from '../../../api/helpers/game-logic/publishGameState';
+import { handleError } from '../../../api/helpers/game-logic/errorHandling';
 
 // creating specific mock data of the Game model for publishGameState
 vi.mock('../../../api/models/Game', () => ({
