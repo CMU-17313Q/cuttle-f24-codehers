@@ -6,7 +6,14 @@ module.exports = function gameHook() {
   // Game API //
   //////////////
   return {
-    createGame: function (gameName, isRanked = false, status = gameService.GameStatus.CREATED, player0Id, player1Id, isVsAI = false) {
+    createGame: function (
+      gameName,
+      isRanked = false,
+      status = gameService.GameStatus.CREATED,
+      player0Id,
+      player1Id,
+      isVsAI = false
+    ) {
       return new Promise(function (resolve, reject) {
         Game.create({
           name: gameName,
@@ -33,7 +40,8 @@ module.exports = function gameHook() {
     },
     findOpenGames: function () {
       return new Promise(function (resolve, reject) {
-        const recentUpdateThreshold = dayjs.utc().subtract(1, 'day').toDate();
+        const recentUpdateThreshold = dayjs.utc().subtract(1, 'day')
+          .toDate();
     
         Game.find({
           status: gameService.GameStatus.CREATED,

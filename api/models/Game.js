@@ -151,7 +151,7 @@ module.exports = {
   customToJSON: function () {
     return {
       ...this,
-      players: [this.p0, this.p1].filter(Boolean),
+      players: [ this.p0, this.p1 ].filter(Boolean),
     };
   },
 }; // end exports

@@ -1,7 +1,7 @@
 const gameAPI = sails.hooks['customgamehook'];
 
 module.exports = function (req, res) {
-  const { gameName, isRanked = false, player0Id, player1Id } = req.body;
+  const { gameName, isRanked = false, player0Id, player1Id, isVsAI = false } = req.body;
 
   if (req.body.gameName) {
     gameAPI
@@ -21,6 +21,6 @@ module.exports = function (req, res) {
         res.badRequest(reason);
       });
   } else {
-    res.badRequest({ message: "Game name is required" });
+    res.badRequest({ message: 'Game name is required' });
   }
 };
