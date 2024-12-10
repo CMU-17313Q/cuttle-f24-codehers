@@ -1,19 +1,15 @@
-const chai = require('chai');
-const sinon = require('sinon');
-const findSpectatableGames = require('../api/helpers/find-spectatable-games');
-const Game = require('../models/Game'); // Adjust the path as necessary
-
-const { expect } = chai;
+import { beforeEach, describe, it, expect, vi, afterEach } from 'vitest';
+import findSpectatableGames from '../../../api/helpers/find-spectatable-games';
+import Game from '../../../models/Game'; // Adjust the path as necessary
 
 describe('findSpectatableGames', () => {
-  let sandbox;
-
   beforeEach(() => {
-    sandbox = sinon.createSandbox();
+    vi.resetModules();
+    vi.clearAllMocks();
   });
 
   afterEach(() => {
-    sandbox.restore();
+    vi.restoreAllMocks();
   });
 
   it('should return games with players having only id and username', async () => {
@@ -28,17 +24,17 @@ describe('findSpectatableGames', () => {
       },
     ];
 
-    sandbox.stub(Game, 'find').returns({
-      populate: sinon.stub().resolves(mockGames),
+    vi.spyOn(Game, 'find').mockReturnValue({
+      populate: vi.fn().mockResolvedValue(mockGames),
     });
 
     const result = await findSpectatableGames.fn();
 
     result.forEach(game => {
       game.players.forEach(player => {
-        expect(player).to.have.property('id');
-        expect(player).to.have.property('username');
-        expect(player).to.not.have.property('email');
+        expect(player).toHaveProperty('id');
+        expect(player).toHaveProperty('username');
+        expect(player).not.toHaveProperty('email');
       });
     });
   });
