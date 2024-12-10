@@ -7,4 +7,15 @@ module.exports = function updateGameStateAfterDraw(game, user) {
     turn: game.turn + 1,
     lastEvent: { change: 'draw' },
   };
+  const userUpdates = { frozenId: null };
+  if (game.secondCard) {
+    gameUpdates.topCard = game.secondCard.id;
+    if (game.deck.length > 0) {
+      const newSecondCard = _.sample(game.deck);
+      gameUpdates.secondCard = newSecondCard.id;
+    } else {
+      gameUpdates.secondCard = null;
+    }
+  }
+  return { gameUpdates, userUpdates };
 };
