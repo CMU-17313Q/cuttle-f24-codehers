@@ -156,6 +156,7 @@ describe('Home - Game List', () => {
       // Sign up new user and subscribe them to game
       cy.signupOpponent(opponentOne);
       cy.subscribeOpponent(gameData.gameId);
+      cy.get('[data-cy=game-list-item]').contains('vs opponentOne');
       // Our user then joins through UI
       cy.get('[data-cy=game-list-item]').contains('button.v-btn', 'Join Casual')
         .click();
@@ -216,8 +217,13 @@ describe('Home - Game List', () => {
 
       // Test that join button is now disabled
       cy.contains('[data-cy-join-game]', 'Join Casual').should('be.disabled');
+      // Verify the updated player text
+      cy.get('[data-cy=game-list-item]').contains('playerOne vs playerTwo');
 
       cy.leaveLobbyOpponent(gameData.gameId);
+      
+      // Verify the updated player text and re-enabled join button
+      cy.get('[data-cy=game-list-item]').contains('vs playerOne');
       cy.contains('[data-cy-join-game]', 'Join Casual').should('not.be.disabled');
     });
   });
