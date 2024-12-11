@@ -93,6 +93,12 @@ describe('Home - Game List', () => {
       cy.get('[data-cy=game-list-item]').contains('Empty');
     });    
 
+    it('Displays "vs [username]" when there is one player', () => {
+      const players = [{ id: '1', username: 'playerOne' }];
+      cy.createGamePlayer({ gameName: 'Game with one player', isRanked: false, players });
+      cy.get('[data-cy=game-list-item]').contains('vs playerOne');
+    });    
+
     it('Adds a new game to the list when one comes in through the socket', () => {
       cy.createGamePlayer({ gameName: '111', isRanked: false });
       cy.createGamePlayer({ gameName: '33', isRanked: false });
