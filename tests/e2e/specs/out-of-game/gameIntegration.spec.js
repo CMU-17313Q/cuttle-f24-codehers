@@ -33,4 +33,74 @@ it('Displays a single-player game correctly', () => {
     .and('contain', 'Empty');
 });
 
-})
+  // Verify the frontend displays usernames correctly
+  cy.visit('/');
+  cy.get('[data-cy=game-list-item]').should(
+      'contain',
+      'PlayerOne vs PlayerTwo',
+  );
+  it('Handles players joining and leaving games dynamically', () => {
+    // Create a game with one player
+    cy.request('POST', '/api/game/create', {
+      name: 'Dynamic Game',
+      players: [{ id: '1', username: 'PlayerOne' }],
+    }).then((response) => {
+      expect(response.status).to.eq(200);
+      const gameId = response.body.id;
+
+      // Add a second player using joinGame
+      cy.request('POST', `/api/game/${gameId}/join`, {
+        player: { id: '2', username: 'PlayerTwo' },
+      }).then((joinResponse) => {
+        expect(joinResponse.status).to.eq(200);
+      });
+
+      // Verify the game list updates
+      cy.visit('/');
+      cy.get('[data-cy=game-list-item]').should('contain', 'PlayerOne vs PlayerTwo');
+
+      // Remove the first player using otherLeftGame
+      cy.request('POST', `/api/game/${gameId}/leave`, { playerId: '1' }).then(
+        (leaveResponse) => {
+          expect(leaveResponse.status).to.eq(200);
+        },
+      );
+
+      // Verify the updated game list
+      cy.visit('/');
+      cy.get('[data-cy=game-list-item]').should('contain', 'PlayerTwo').and('contain', 'Empty');
+    });
+  });
+
+  it('Displays spectatable games correctly', () => {
+    // Create a game using findSpectatableGames
+    cy.request('POST', '/api/game/create', {
+      name: 'Spectatable Game',
+      players: [
+        { id: '1', username: 'PlayerOne' },
+        { id: '2', username: 'PlayerTwo' },
+      ],
+      status: 'STARTED',
+    }).then((response) => {
+      expect(response.status).to.eq(200);
+    });
+
+    // Verify the spectatable games API response
+    cy.request('GET', '/api/game/findSpectatableGames').then((response) => {
+      expect(response.status).to.eq(200);
+      expect(response.body[0].players).to.deep.include.members([
+        { id: '1', username: 'PlayerOne' },
+        { id: '2', username: 'PlayerTwo' },
+      ]);
+    });
+
+    // Verify the frontend displays spectatable games correctly
+    cy.visit('/');
+    cy.get('[data-cy=game-list-item]').should(
+      'contain',
+      'PlayerOne vs PlayerTwo',
+    );
+  });
+});
+
+
