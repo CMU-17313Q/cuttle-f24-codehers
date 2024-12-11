@@ -62,6 +62,7 @@ module.exports.routes = {
   '/api/game/getList': 'game/get-list',
   '/api/game/subscribe': 'game/subscribe',
   '/api/game/spectate': 'game/spectate',
+  'GET /api/game/findOpenGames': 'game/find-open-games',
   '/api/game/spectateLeave': 'game/spectate-leave',
   '/api/game/reconnect': 'game/reconnect',
   '/api/game/ready': 'game/ready',
