@@ -12,5 +12,8 @@ it('Displays "No games available" when no open games exist', () => {
     expect(response.status).to.eq(200);
     expect(response.body).to.have.length(0);
   });
-})
+
+  // Verify the frontend behavior
+  cy.get('[data-cy=game-list]').should('contain', 'No games available');
+});
 })
