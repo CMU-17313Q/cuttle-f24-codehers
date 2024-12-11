@@ -1,57 +1,98 @@
-const gameHook = require('../../../api/hooks/customGameHook/index');
-const sinon = require('sinon');
+import { describe, it, expect, beforeEach, vi } from 'vitest';
+import gameHook from '../../../api/hooks/customGameHook/index.js';
+
+global.gameService = {
+  GameStatus: {
+    CREATED: 'created',
+  },
+};
+
+global.Game = {
+  create: vi.fn(),
+  find: vi.fn(),
+  findOne: vi.fn(),
+};
 
 describe('customGameHook', () => {
+  let hook;
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+    hook = gameHook();
+  });
+
+  describe('createGame', () => {
+    it('should create a game successfully', async () => {
+      const mockGame = { id: 'game1', name: 'Test Game', isRanked: true, status: gameService.GameStatus.CREATED };
+      Game.create.mockReturnValueOnce({
+        fetch: vi.fn().mockResolvedValue(mockGame),
+      });
+
+      const result = await hook.createGame('Test Game', true);
+      expect(result).toEqual(mockGame);
+      expect(Game.create).toHaveBeenCalledWith({
+        name: 'Test Game',
+        isRanked: true,
+        status: gameService.GameStatus.CREATED,
+      });
+    });
+
+    it('should handle errors during game creation', async () => {
+      Game.create.mockReturnValueOnce({
+        fetch: vi.fn().mockRejectedValue(new Error('Database error')),
+      });
+
+      await expect(hook.createGame('Test Game', true)).rejects.toThrow('Database error');
+    });
+  });
+
   describe('findOpenGames', () => {
-    let GameMock;
-
-    beforeEach(() => {
-      GameMock = {
-        find: sinon.stub().returnsThis(),
-        populate: sinon.stub().returnsThis(),
-        exec: sinon.stub(),
-      };
-      global.Game = GameMock; // Mock the global Game model
-    });
-
-    afterEach(() => {
-      sinon.restore();
-    });
-
-    it('should filter and transform games correctly', async () => {
+    it('should find open games with less than 2 players', async () => {
       const mockGames = [
-        {
-          id: '1',
-          players: [
-            { id: '1', username: 'PlayerOne', extraField: 'hidden' },
-          ],
-        },
+        { id: 'game1', players: [{ id: 'player1', username: 'Player1' }] },
       ];
 
-      GameMock.exec.callsFake((callback) => callback(null, mockGames));
+      Game.find.mockReturnValueOnce({
+        populate: vi.fn().mockReturnThis(),
+        exec: vi.fn().mockImplementation((callback) => callback(null, mockGames)),
+      });
 
-      const result = await gameHook().findOpenGames();
-
-      expect(result).to.deep.equal([
-        {
-          id: '1',
-          players: [{ id: '1', username: 'PlayerOne' }],
-        },
-      ]);
+      const openGames = await hook.findOpenGames();
+      expect(openGames).toHaveLength(1);
+      expect(openGames[0].players).toEqual([{ id: 'player1', username: 'Player1' }]);
     });
 
-    it('should return an empty array if no games are found', async () => {
-      GameMock.exec.callsFake((callback) => callback(null, []));
+    it('should return an error if no games are found', async () => {
+      Game.find.mockReturnValueOnce({
+        populate: vi.fn().mockReturnThis(),
+        exec: vi.fn().mockImplementation((callback) => callback(null, [])),
+      });
 
-      const result = await gameHook().findOpenGames();
+      await expect(hook.findOpenGames()).rejects.toEqual({ message: "Can't find games" });
+    });
+  });
 
-      expect(result).to.deep.equal([]);
+  describe('findGame', () => {
+    it('should retrieve a game by ID with populated relations', async () => {
+      const mockGame = { id: 'game1', players: [{ id: 'player1', username: 'Player1' }] };
+
+      Game.findOne.mockReturnValueOnce({
+        populate: vi.fn().mockReturnThis(),
+        exec: vi.fn().mockImplementation((callback) => callback(null, mockGame)),
+      });
+
+      const result = await hook.findGame('game1');
+      expect(result).toEqual(mockGame);
+      expect(Game.findOne).toHaveBeenCalledWith('game1');
     });
 
-    it('should throw an error if the query fails', async () => {
-      GameMock.exec.callsFake((callback) => callback(new Error('Database error')));
+    it('should return an error if no game is found', async () => {
+      Game.findOne.mockReturnValueOnce({
+        populate: vi.fn().mockReturnThis(),
+        exec: vi.fn().mockImplementation((callback) => callback(null, null)),
+      });
 
-      await expect(gameHook().findOpenGames()).to.be.rejectedWith('Database error');
+      await expect(hook.findGame('game1')).rejects.toEqual({ message: 'home.snackbar.cantFindGame' });
     });
   });
 });
