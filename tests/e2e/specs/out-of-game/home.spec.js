@@ -69,7 +69,7 @@ describe('Home - Page Content', () => {
     cy.requestGameList();
     cy.requestGameList();
   });
-  
+
 });
 
 describe('Home - Game List', () => {
@@ -87,6 +87,11 @@ describe('Home - Game List', () => {
         expect($el.text().trim()).to.equal('No Active Games'),
       );
     });
+
+    it('Displays "Empty" when there are no players', () => {
+      cy.createGamePlayer({ gameName: 'Game with no players', isRanked: false, players: [] });
+      cy.get('[data-cy=game-list-item]').contains('Empty');
+    });    
 
     it('Adds a new game to the list when one comes in through the socket', () => {
       cy.createGamePlayer({ gameName: '111', isRanked: false });
