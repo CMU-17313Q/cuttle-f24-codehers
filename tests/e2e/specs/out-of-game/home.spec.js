@@ -99,6 +99,15 @@ describe('Home - Game List', () => {
       cy.get('[data-cy=game-list-item]').contains('vs playerOne');
     });    
 
+    it('Displays "[username] vs [username]" when there are two players', () => {
+      const players = [
+        { id: '1', username: 'playerOne' },
+        { id: '2', username: 'playerTwo' }
+      ];
+      cy.createGamePlayer({ gameName: 'Game with two players', isRanked: false, players });
+      cy.get('[data-cy=game-list-item]').contains('playerOne vs playerTwo');
+    });
+    
     it('Adds a new game to the list when one comes in through the socket', () => {
       cy.createGamePlayer({ gameName: '111', isRanked: false });
       cy.createGamePlayer({ gameName: '33', isRanked: false });
