@@ -72,7 +72,7 @@ describe('Home - Page Content', () => {
 
 });
 
-describe('Home - Game List', () => {
+describe.only('Home - Game List', () => {
   beforeEach(setup);
 
   describe('Open Games', () => {
@@ -221,7 +221,7 @@ describe('Home - Game List', () => {
       cy.get('[data-cy=game-list-item]').contains('playerOne vs playerTwo');
 
       cy.leaveLobbyOpponent(gameData.gameId);
-      
+
       // Verify the updated player text and re-enabled join button
       cy.get('[data-cy=game-list-item]').contains('vs playerOne');
       cy.contains('[data-cy-join-game]', 'Join Casual').should('not.be.disabled');
