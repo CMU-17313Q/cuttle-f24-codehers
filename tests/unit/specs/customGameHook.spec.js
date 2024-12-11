@@ -49,7 +49,7 @@ describe('customGameHook', () => {
   describe('findOpenGames', () => {
     it('should find open games with less than 2 players', async () => {
       const mockGames = [
-        { id: 'game1', players: [{ id: 'player1', username: 'Player1' }] },
+        { id: 'game1', players: [ { id: 'player1', username: 'Player1' } ] },
       ];
 
       Game.find.mockReturnValueOnce({
@@ -59,7 +59,7 @@ describe('customGameHook', () => {
 
       const openGames = await hook.findOpenGames();
       expect(openGames).toHaveLength(1);
-      expect(openGames[0].players).toEqual([{ id: 'player1', username: 'Player1' }]);
+      expect(openGames[0].players).toEqual([ { id: 'player1', username: 'Player1' } ]);
     });
 
     it('should return an error if no games are found', async () => {
@@ -74,7 +74,7 @@ describe('customGameHook', () => {
 
   describe('findGame', () => {
     it('should retrieve a game by ID with populated relations', async () => {
-      const mockGame = { id: 'game1', players: [{ id: 'player1', username: 'Player1' }] };
+      const mockGame = { id: 'game1', players: [ { id: 'player1', username: 'Player1' } ] };
 
       Game.findOne.mockReturnValueOnce({
         populate: vi.fn().mockReturnThis(),
