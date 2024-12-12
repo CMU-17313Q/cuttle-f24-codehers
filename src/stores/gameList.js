@@ -7,6 +7,7 @@ class GameSummary {
   constructor(obj) {
     this.id = obj.id ? obj.id : null;
     this.name = obj.name ? obj.name : null;
+    this.players = Object.prototype.hasOwnProperty.call(obj, 'players') ? obj.players : [];
     this.numPlayers = Object.prototype.hasOwnProperty.call(obj, 'players') ? obj.players.length : 0;
     this.status = Object.prototype.hasOwnProperty.call(obj, 'status') ? obj.status : GameStatus.ARCHIVED;
     this.isRanked = Object.prototype.hasOwnProperty.call(obj, 'isRanked') ? obj.isRanked : false;
@@ -52,14 +53,18 @@ export const useGameListStore = defineStore('gameList', {
     joinGame(data) {
       const updatedGame = this.openGames.find((game) => game.id === data.gameId);
       if (updatedGame) {
-        updatedGame.numPlayers = Math.min(2, updatedGame.numPlayers + 1);
-        updatedGame.status = data.newStatus;
+        if (updatedGame.players.length < 2) {
+          updatedGame.players.push(data.player); // Add the new player (make sure player contains {id, username})
+          updatedGame.status = data.newStatus;
+        }
       }
     },
     otherLeftGame(gameId) {
       const updatedGame = this.openGames.find((game) => game.id === gameId);
       if (updatedGame) {
-        updatedGame.numPlayers = Math.max(0, updatedGame.numPlayers - 1);
+        if (updatedGame.players.length != 0) {
+          updatedGame.players.pop(); // Remove the last player (or you could use a more specific way to remove a player)
+        }
       }
     },
     setIsRanked({ gameId, isRanked }) {

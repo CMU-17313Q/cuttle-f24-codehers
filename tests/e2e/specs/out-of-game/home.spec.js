@@ -497,14 +497,14 @@ describe('Home - Create Game', () => {
     cy.get('[data-cy=game-list-item]')
       .should('have.length', 1)
       .should('include.text', 'test game')
-      .should('include.text', '1 / 2 players');
+      .should('include.text', 'vs');
 
     // Test store
     cy.window()
       .its('cuttle.gameListStore.openGames')
       .then((games) => {
         expect(games.length).to.eq(1, 'Expect exactly 1 game in store');
-        expect(games[0].numPlayers).to.eq(1, 'Expect 1 players in game in store');
+        expect(games[0].players.length).to.eq(1, 'Expect 1 players in game in store');
         expect(games[0].status).to.eq(GameStatus.CREATED, 'Expect game to have status CREATED');
       });
   });
@@ -534,13 +534,13 @@ describe('Home - Create Game', () => {
     cy.get('[data-cy=game-list-item]')
       .should('have.length', 1)
       .should('include.text', 'test game')
-      .should('include.text', '1 / 2 players');
+      .should('include.text', 'vs');
     // Test store
     cy.window()
       .its('cuttle.gameListStore.openGames')
       .then((games) => {
         expect(games.length).to.eq(1, 'Expect exactly 1 game in store');
-        expect(games[0].numPlayers).to.eq(1, 'Expect 1 player in gameLists game in store');
+        expect(games[0].players.length).to.eq(1, 'Expect 1 player in gameLists game in store');
         expect(games[0].status).to.eq(GameStatus.CREATED, 'Expect game to have status CREATED');
         expect(games[0].isRanked).to.eq(false, 'Expect game to be ranked');
       });
@@ -572,14 +572,14 @@ describe('Home - Create Game', () => {
     cy.get('[data-cy=game-list-item]')
       .should('have.length', 1)
       .should('include.text', 'test game')
-      .should('include.text', '1 / 2 players');
+      .should('include.text', 'vs');
 
     // Test store
     cy.window()
       .its('cuttle.gameListStore.openGames')
       .then((games) => {
         expect(games.length).to.eq(1, 'Expect exactly 1 game in store');
-        expect(games[0].numPlayers).to.eq(1, 'Expect 1 player in gameLists game in store');
+        expect(games[0].players.length).to.eq(1, 'Expect 1 player in gameLists game in store');
         expect(games[0].status).to.eq(GameStatus.CREATED, 'Expect game to have status CREATED');
         expect(games[0].isRanked).to.eq(true, 'Expect game to be ranked');
       });
