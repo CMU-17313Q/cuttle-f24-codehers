@@ -57,7 +57,7 @@
           </v-list-item>
         </v-list>
       </v-navigation-drawer>
-
+      
       <!-- Opponent Hand -->
       <div class="opponent-hand-container">
         <div id="opponent-hand" class="d-flex flex-column justify-start align-center px-2 pb-2 mx-auto">
@@ -149,6 +149,14 @@
               <h1 v-if="deckLength === 0" id="empty-deck-text">
                 {{ t('game.pass') }}
               </h1>
+            </template>
+            
+            <template>
+              <div v-if="aiThinking" class="ai-thinking-spinner">
+                <!-- Show a spinner or "AI is thinking..." message -->
+                <p>{{ t('game.aiThinking') }}</p>
+              </div>
+              <!-- Your regular game UI -->
             </template>
 
             <template v-if="gameStore.resolvingSeven">
@@ -457,7 +465,7 @@ export default {
       showSnackbar: false,
       snackBarMessage: '',
       snackBarColor: 'error',
-      selectionIndex: null, // when select a card set this value
+      selectionIndex: null,
       targeting: false,
       targetingMoveName: null,
       targetingMoveDisplayName: null,
@@ -467,6 +475,8 @@ export default {
       topCardIsSelected: false,
       secondCardIsSelected: false,
       showHistoryDrawer: false,
+      isAI: false,  // Add flag for AI opponent
+      aiThinking: false, // Track if AI is "thinking" after player's move
     };
   },
   computed: {
@@ -746,11 +756,20 @@ export default {
         this.scrollToLastLog();
       });
     },
+    gameStore: {
+      handler() {
+        if (this.gameStore.isPlayersTurn === false && this.isAI) {
+          // If it's the AI's turn, request the AI to make a move
+          this.requestAIMove();
+        }
+    },
+
     topCard(newTopCard, oldTopCard) {
       if (this.gameStore.id && oldTopCard && !newTopCard) {
         this.showCustomSnackbarMessage('game.snackbar.draw.exhaustedDeck');
       }
-    }
+    },
+    
   },
   async mounted() {
     if (!this.authStore.authenticated) {
@@ -810,6 +829,31 @@ export default {
       if (!this.gameStore.waitingForOpponentToPlayFromDeck) {
         this.topCardIsSelected = false;
         this.secondCardIsSelected = !this.secondCardIsSelected;
+      }
+    },
+
+    //////////////////
+    // Adding AI methods //
+    //////////////////
+    // Request AI to make a move
+    async requestAIMove() {
+      try {
+        this.aiThinking = true; // Set flag to show AI is "thinking"
+        await this.gameStore.requestAIMove(); // Make request to backend (you'll need to create this API call)
+        this.aiThinking = false; // Reset AI thinking flag when move is done
+      } catch (error) {
+        this.handleError(error);
+        this.aiThinking = false; // Reset AI thinking flag if an error occurs
+      }
+    },
+
+    // Handle game state after a player's move
+    async onPlayerMoveComplete() {
+      // If the opponent is an AI, make the AI move after a delay
+      if (this.isAI) {
+        setTimeout(() => {
+          this.requestAIMove(); // Trigger AI move after a delay (e.g., 2 seconds)
+        }, 2000); // Delay time before AI move
       }
     },
     /**
