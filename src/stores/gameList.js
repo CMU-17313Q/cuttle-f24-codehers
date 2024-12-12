@@ -58,20 +58,14 @@ export const useGameListStore = defineStore('gameList', {
           updatedGame.status = data.newStatus;
         }
       }
-      // if (updatedGame) {
-      //   updatedGame.numPlayers = Math.min(2, updatedGame.numPlayers + 1);
-      //   updatedGame.status = data.newStatus;
-      // }
     },
     otherLeftGame(gameId) {
       const updatedGame = this.openGames.find((game) => game.id === gameId);
       if (updatedGame) {
-        updatedGame.players.pop(); // Remove the last player (or you could use a more specific way to remove a player)
+        if (updatedGame.players.length != 0) {
+          updatedGame.players.pop(); // Remove the last player (or you could use a more specific way to remove a player)
+        }
       }
-      // const updatedGame = this.openGames.find((game) => game.id === gameId);
-      // if (updatedGame) {
-      //   updatedGame.numPlayers = Math.max(0, updatedGame.numPlayers - 1);
-      // }
     },
     setIsRanked({ gameId, isRanked }) {
       const updatedGame = this.openGames.find((game) => game.id === gameId);
