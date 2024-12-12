@@ -45,18 +45,7 @@ module.exports = function gameHook() {
               return reject({ message: "Can't find games" });
             }
     
-            // Filter games with fewer than 2 players and transform the players array
-            const openGames = games
-              .filter(({ players }) => players.length < 2) // Keep games with fewer than 2 players
-              .map((game) => {
-                // Transform players array to include only id and username
-                game.players = game.players.map((player) => ({
-                  id: player.id, // Use 'id' since Sails.js generates it automatically
-                  username: player.username,
-                }));
-                return game; // Return the updated game object
-              });
-    
+            const openGames = games.filter(({ players }) => players.length < 2);
             return resolve(openGames); // Resolve with transformed open games
           });
       });

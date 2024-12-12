@@ -8,6 +8,7 @@ class GameSummary {
     this.id = obj.id ? obj.id : null;
     this.name = obj.name ? obj.name : null;
     this.players = Object.prototype.hasOwnProperty.call(obj, 'players') ? obj.players : [];
+    this.numPlayers = Object.prototype.hasOwnProperty.call(obj, 'players') ? obj.players.length : 0;
     this.status = Object.prototype.hasOwnProperty.call(obj, 'status') ? obj.status : GameStatus.ARCHIVED;
     this.isRanked = Object.prototype.hasOwnProperty.call(obj, 'isRanked') ? obj.isRanked : false;
     this.isOver = false;
